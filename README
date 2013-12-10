@@ -1,2 +1,6 @@
 This project is a prime number generator written entirely in assembly
 for the linux kernel running on the x86_64.
+
+What's interesting about this program is that even though the
+theoretical complexity of the order O(N * sqrt(N)), because it uses a
+prime number sieve, the benchmarks show it having a linear runtime.
