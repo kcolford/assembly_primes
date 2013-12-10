@@ -3,6 +3,6 @@ all: test
 .asm.s:
 	sed -e 's=;=#=g' < $< > $@
 clean:
-	$(RM) test *.o *.s 
+	$(RM) test
 .PHONY: all clean
 .SUFFIXES: .asm
