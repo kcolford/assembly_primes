@@ -1,0 +1,2 @@
+This project is a prime number generator written entirely in assembly
+for the linux kernel running on the x86_64.
