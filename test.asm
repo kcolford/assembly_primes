@@ -1,27 +1,28 @@
-;;; The prime number generator that only works on the linux x86_64
+;;;; The prime number generator that only works on the linux x86_64
 
-;;; Copyright (C) 2013 Kieran Colford
-;;;
-;;; This program is free software: you can redistribute it and/or
-;;; modify it under the terms of the GNU General Public License as
-;;; published by the Free Software Foundation, either version 3 of the
-;;; License, or (at your option) any later version.
-;;;
-;;; This program is distributed in the hope that it will be useful,
-;;; but WITHOUT ANY WARRANTY; without even the implied warranty of
-;;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-;;; General Public License for more details.
-;;;
-;;; You should have received a copy of the GNU General Public License
-;;; along with this program.  If not, see
-;;; <http://www.gnu.org/licenses/>.
-;;;
-;;; The copyright holder can be contacted at <colfordk@gmail.com>.
+;;;; Copyright (C) 2013 Kieran Colford
+;;;;
+;;;; This program is free software: you can redistribute it and/or
+;;;; modify it under the terms of the GNU General Public License as
+;;;; published by the Free Software Foundation, either version 3 of the
+;;;; License, or (at your option) any later version.
+;;;;
+;;;; This program is distributed in the hope that it will be useful,
+;;;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;;;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+;;;; General Public License for more details.
+;;;;
+;;;; You should have received a copy of the GNU General Public License
+;;;; along with this program.  If not, see
+;;;; <http://www.gnu.org/licenses/>.
+;;;;
+;;;; The copyright holder can be contacted at <colfordk@gmail.com>.
 
 
 ;;; This is the assembly code for a prime number generator.  It uses a
 ;;; standtard sieve of eratosthenes to do so (running time of O(N *
-;;; sqrt(N)) but benchmarking shows it having a linear running time.
+;;; sqrt(N)) but benchmarking shows it having a linear running time
+;;; instead.
 ;;;
 ;;; It runs on the x86_64 microprocessor running linux.  Do not link
 ;;; using a C compiler, only use the standard `ld' command.
@@ -34,7 +35,7 @@
 ;;; program.
 
    ;; Our the size of our table must be known at compile time.
-   .set  table_size, 10
+   .set  table_size, 10000
    ;; The maximum value that we can compute given the size of our
    ;; table.
    .set  max, table_size * table_size

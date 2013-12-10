@@ -1,6 +1,5 @@
-all: test ctest.s
-test: test.o
-	ld $(LDFLAGS) -o $@ $<
+CC = ld
+all: test
 .asm.s:
 	sed -e 's=;=#=g' < $< > $@
 clean:
