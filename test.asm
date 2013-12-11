@@ -115,58 +115,43 @@ _start:
 ;;; out a newline character and keeping the %rsi register safe from
 ;;; being clobbered by the syscall.
 ;;;
-;;; Admittedly, this is probably the least efficient method for doing
-;;; IO.  I should really have implemented buffered IO but using
-;;; recursion in assembly was just too inviting.
+;;; TODO: Implement more buffering of output, into a static array in
+;;;       the bss section or something so that we can make fewer calls
+;;;       to the kernel.
 pushnum:
    lea   (limit), %r8
    cmp   %r8, table_top         ;We don't want to over fill the table.
    jge   .L4
    mov   %rsi, (table_top)      ;Push %rsi.
-   add   $8,	%r9
+   add   $8, table_top
 .L4:	      
    push  %rsi                   ;Keep %rsi safe from the evil syscall.
    mov   %rsi, %rax
-   call  spitint
-   mov   $0xa, %rax             ;Print the terminating newline.
-   call  print
-   pop   %rsi
-   ret   
-   
-;;; We print out the number in %rax going digit by digit, recursing to
-;;; display the most significant digit then the least significant.
-spitint:      
-   test  %rax, %rax
-   jz    .L5
+   mov   $0xa, %rdx
+   dec   %rsp
+   mov   %dl, (%rsp)            ;Push a newline onto the stack.
+   mov   $1, %rcx               ;Initialize the count register.
+.L5:
    mov   $0, %rdx
-   ;; The `div' instruction can only accept a register as an argument,
-   ;; so we fill %r10 with the value 10 and pass it.
-   mov   $10, %r10
-   div   %r10
-   push  %rdx                   ;Store the digit on the stack for
-                                ;after the recursive call.
-   call  spitint
-   pop   %rax
-   add   $0x30, %rax
-   call  print
-.L5:	      
-   ret   
-   
-;;; This is a simple routine to print the character in %rax to file
-;;; descriptor 1.  The syscall seems to arbitrarily clobber registers
-;;; so if I used this in another program I would push all the
-;;; registers on to the stack beforehand and then pop them off later.
-;;; Luckily though, this program is a special case which makes things
-;;; easier.
-print:	      
-   push  %rax
-   mov   $1, %rdx
+   ;; The div instruction only accepts a register as an argument, so
+   ;; we put it into %r10 for the time being.
+   mov   $10, %r10              
+   divq  %r10
+   add   $0x30, %rdx            ;Translate remainder to ascii code.
+   dec   %rsp                  
+   mov   %dl, (%rsp)            ;Push digit onto stack.
+   inc   %rcx
+   test  %rax, %rax
+   jnz   .L5                    ;If we're not done, do it again.
+   ;; Now we have to set up all the registers for the syscall.  This
+   ;; has so much overhead but I have no idea how else it can be done.
+   mov   %rcx, %rdx
    lea   (%rsp), %rsi
    mov   $1, %rdi
-   ;; The syscall number for write is 1.  Some times it is different
-   ;; though, which just adds even more portability problems for my
-   ;; assembly code.
-   mov   $1, %rax               
-   syscall 
-   pop   %rax
+   mov   $1, %rax
+   push  %rcx                   ;Protect %rcx from clobbering.
+   syscall                      ;Do the syscall.
+   pop   %rcx                   
+   add   %rcx, %rsp             ;Restore the stack.
+   pop   %rsi
    ret   

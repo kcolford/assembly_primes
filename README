@@ -4,3 +4,6 @@ for the linux kernel running on the x86_64.
 To build the package from source, simply run `make'.
 
 The complexity of the algorithm is O(N * log log N)
+
+Recently optimized for a ~20% reduction in speed thanks to line
+buffered IO.
