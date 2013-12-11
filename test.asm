@@ -115,9 +115,9 @@ _start:
 ;;; out a newline character and keeping the %rsi register safe from
 ;;; being clobbered by the syscall.
 ;;;
-;;; Admittedly, this is probably the least efficient possible method
-;;; for doing IO.  I should really have implemented buffered IO but
-;;; using recursion in assembly was just too inviting.
+;;; Admittedly, this is probably the least efficient method for doing
+;;; IO.  I should really have implemented buffered IO but using
+;;; recursion in assembly was just too inviting.
 pushnum:
    lea   (limit), %r8
    cmp   %r8, table_top         ;We don't want to over fill the table.
@@ -128,7 +128,7 @@ pushnum:
    push  %rsi                   ;Keep %rsi safe from the evil syscall.
    mov   %rsi, %rax
    call  spitint
-   mov   $0xa, %rax
+   mov   $0xa, %rax             ;Print the terminating newline.
    call  print
    pop   %rsi
    ret   
