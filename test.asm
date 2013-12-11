@@ -33,7 +33,7 @@
 ;;; program.
 
    ;; Our the size of our table must be known at compile time.
-   .set  table_size, 10000
+   .set  table_size, 5000
    ;; The maximum value that we can compute given the size of our
    ;; table.
    .set  max, table_size * table_size
