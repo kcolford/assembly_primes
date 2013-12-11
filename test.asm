@@ -108,7 +108,7 @@ _start:
    ;; lot of searching through system header files and disassembler
    ;; output of test programs written in C.
    mov   $0, %rdi
-   mov   $60, %rax
+   mov   $0x3c, %rax
    syscall 
    
 ;;; We push a number onto the end of the table followed by printing
@@ -128,7 +128,7 @@ pushnum:
    push  %rsi                   ;Keep %rsi safe from the evil syscall.
    mov   %rsi, %rax
    call  spitint
-   mov   $10, %rax
+   mov   $0xa, %rax
    call  print
    pop   %rsi
    ret   
@@ -147,7 +147,7 @@ spitint:
                                 ;after the recursive call.
    call  spitint
    pop   %rax
-   add   $48, %rax
+   add   $0x30, %rax
    call  print
 .L5:	      
    ret   
