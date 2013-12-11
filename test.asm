@@ -20,9 +20,7 @@
 
 
 ;;; This is the assembly code for a prime number generator.  It uses a
-;;; standtard sieve of eratosthenes to do so (running time of O(N *
-;;; sqrt(N)) but benchmarking shows it having a linear running time
-;;; instead.
+;;; standard sieve of eratosthenes to do so.
 ;;;
 ;;; It runs on the x86_64 microprocessor running linux.  Do not link
 ;;; using a C compiler, only use the standard `ld' command.
