@@ -2,3 +2,6 @@ This project is a prime number generator written entirely in assembly
 for the linux kernel running on the x86_64.
 
 The complexity of the algorithm is O(N * log log N)
+
+Recently optimized for a ~20% reduction in speed thanks to line
+buffered IO.
