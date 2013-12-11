@@ -23,7 +23,7 @@
 ;;; standard sieve of eratosthenes to do so.
 ;;;
 ;;; It runs on the x86_64 microprocessor running linux.  Do not link
-;;; using a C compiler, only use the standard `ld' command.
+;;; using a C compiler, only use the bare standard `ld' command.
 ;;;
 ;;; The GNU assembler defines the comment character for the x86_64 as
 ;;; being a `#' symbol.  This is very problematic and unconventional
@@ -74,12 +74,28 @@ _start:
    lea   (table), %rcx          ;Start the count register %rcx at the
                                 ;begining of the table.
 .L2:	      
+   ;; This this step means that we skip the first number in the table,
+   ;; the number 2, but because we only test odd numbers, we're safe.
    add   $8, %rcx	        ;Move to the next prime in the table.
    mov   $0, %rdx
    mov   %rsi, %rax
    divq  (%rcx)
-   test  %rdx, %rdx 
+   ;; From what I can decipher, this test is very friendly to branch
+   ;; prediction because after the first few prime numbers in the
+   ;; table have been tested, it is very unlikely that a larger value
+   ;; in the table will sift out the number at hand.  So the
+   ;; pipelining benifits we gain when trying to test large numbers
+   ;; balance out the number of tests we have to do.
+   test  %rdx, %rdx             
    jz    .L3
+   ;; This test merely tells us when we can stop testing numbers.  A
+   ;; possible alternative to testing the quotient of the `div'
+   ;; instruction is to use the builtin `fsqrt' instruction to locate
+   ;; the square root and then use loop unwinding.  This was
+   ;; unfavourable as it would have created excessive overhead for
+   ;; smaller primes and composite numbers (of which there are way
+   ;; more of).  Since the quotient is computed at no additional cost,
+   ;; this ends up being the best possibility.
    cmp   %rax, (%rcx)
    jle   .L2
    call  pushnum	        ;We found a prime number!
@@ -103,9 +119,8 @@ _start:
 ;;; for doing IO.  I should really have implemented buffered IO but
 ;;; using recursion in assembly was just too inviting.
 pushnum:
-   ;; We don't want to over fill the table.
    lea   (limit), %r8
-   cmp   %r8, table_top
+   cmp   %r8, table_top         ;We don't want to over fill the table.
    jge   .L4
    mov   %rsi, (table_top)      ;Push %rsi.
    add   $8,	%r9
@@ -148,10 +163,10 @@ print:
    mov   $1, %rdx
    lea   (%rsp), %rsi
    mov   $1, %rdi
-   mov   $1, %rax               ;The syscall number for write is 1.
-                                ;Some times it is different though,
-                                ;which just adds even more portability
-                                ;problems for my assembly code.
+   ;; The syscall number for write is 1.  Some times it is different
+   ;; though, which just adds even more portability problems for my
+   ;; assembly code.
+   mov   $1, %rax               
    syscall 
    pop   %rax
    ret   
