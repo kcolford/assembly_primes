@@ -32,7 +32,7 @@
 ;;; "sed -e 's=;=#=g'" on it before telling `as' to assemble the
 ;;; program.
 
-   ;; Our the size of our table must be known at compile time.
+   ;; The size of our table must be known at compile time.
    .set  table_size, 5000
    ;; The maximum value that we can compute given the size of our
    ;; table.
