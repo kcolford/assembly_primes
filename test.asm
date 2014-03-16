@@ -1,6 +1,6 @@
 ;;;; The prime number generator that only works on the linux x86_64
 
-;;;; Copyright (C) 2013 Kieran Colford
+;;;; Copyright (C) 2013-2014 Kieran Colford
 ;;;;
 ;;;; This program is free software: you can redistribute it and/or
 ;;;; modify it under the terms of the GNU General Public License as
